@@ -2,3 +2,9 @@ name = "RedBench"
 uuid = "3ec10a91-a156-41c4-b1ba-2f6d9590c8b9"
 authors = ["Will Saunders"]
 version = "0.1.0"
+
+[deps]
+Configurations = "5218b696-f38b-4ac9-8b61-a12ec717816d"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
