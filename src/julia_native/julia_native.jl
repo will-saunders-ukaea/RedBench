@@ -1,6 +1,8 @@
 
 
-
+"""
+A basic sequential runner in Julia.
+"""
 mutable struct SequentialJuliaNative
     
     config::Dict{String, Any}
@@ -14,6 +16,9 @@ mutable struct SequentialJuliaNative
 end
 
 
+"""
+Called to actually run the runner on a sample.
+"""
 function run(r::SequentialJuliaNative, sample::Sample)
 
     t0 = time()
