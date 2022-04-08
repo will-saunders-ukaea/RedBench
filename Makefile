@@ -1,0 +1,12 @@
+
+JULIA:=julia
+MAIN:=src/main.jl
+OMP_NUM_THREADS?=1
+JULIA_NUM_THREADS:=$(OMP_NUM_THREADS)
+
+run:
+	$(JULIA) -t $(JULIA_NUM_THREADS) $(MAIN)
+
+
+
+
