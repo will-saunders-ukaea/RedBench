@@ -1,6 +1,6 @@
 module RedBench
 
-using YAML, Configurations, Random, LinearAlgebra
+using YAML, Configurations, Random, LinearAlgebra, PrettyTables
 
 @option struct GlobalConfig
     # Number of elements (rows) in output array.
@@ -11,6 +11,8 @@ using YAML, Configurations, Random, LinearAlgebra
     num_components::Int64=1
     # Number of times to repeat each benchmark.
     num_samples::Int64=1
+    # Number of samples to run and discard before recording.
+    num_burn_in::Int64=8
     # RNG to sample indices and values.
     rng_seed::UInt32=0
     rng::MersenneTwister
@@ -42,6 +44,10 @@ function get_global_config(d::Dict{String, T} = Dict{String, T}()) where {T}
     d_global["rng"] = MersenneTwister(d_global["rng_seed"])
 
     d_parse = from_dict(GlobalConfig, d_global)
+    
+    @assert d_parse.num_burn_in > -1
+
+    return d_parse
     
 end
 
@@ -114,6 +120,42 @@ include("julia_native/julia_native.jl")
 
 
 """
+Compute the achieved bandwidth for a run (GB/s).
+"""
+function compute_bandwidth(config, time)
+    
+    # x3 as the source value is read and written and the current running total
+    # is read?
+    num_bytes = config.num_sources * config.num_components * 8 * 3
+
+    return num_bytes / (time * 1E9)
+
+end
+
+
+"""
+Print some output stats.
+"""
+function print_bandwidths(config, runner_names, times)
+    
+    num_runners, num_samples = size(times)
+
+    data = Array{Any}(undef, (num_runners, 4))
+
+    data[:, 1] .= runner_names
+    for runner in 1:num_runners
+        data[runner, 2] = compute_bandwidth(config, maximum(times[runner, :]))
+        data[runner, 3] = compute_bandwidth(config, sum(times[runner, :]) / num_samples)
+        data[runner, 4] = compute_bandwidth(config, minimum(times[runner, :]))
+    end
+
+
+    pretty_table(stdout, data, ["Name", "min GB/s", "mean GB/S", "max GB/s"])
+end
+
+
+
+"""
 Run each runner for each sample.
 """
 function run(config::GlobalConfig)
@@ -121,7 +163,8 @@ function run(config::GlobalConfig)
     # The keys in run_configs should be the names of runners to initialise.
     num_runners = length(keys(config.run_configs))
     runners = Array{Any}(undef, num_runners)
-    for (ix, runner_name) in enumerate(keys(config.run_configs))
+    runner_names = keys(config.run_configs)
+    for (ix, runner_name) in enumerate(runner_names)
         runner_type = getfield(@__MODULE__, Symbol(runner_name))
         runners[ix] = runner_type(config.run_configs[runner_name])
     end
@@ -130,7 +173,7 @@ function run(config::GlobalConfig)
     times = zeros(Float64, (num_runners, config.num_samples))
     
     # For each sample run each runner and record the time/validate.
-    for samplex in 1:config.num_samples
+    for samplex in 1:config.num_samples + config.num_burn_in
         sample = Sample(config)
 
         if config.validate
@@ -142,7 +185,10 @@ function run(config::GlobalConfig)
             reset(sample)
 
             time_runner = run(runners[runnerx], sample)
-            times[runnerx, samplex] = time_runner
+
+            if samplex > config.num_burn_in
+                times[runnerx, samplex - config.num_burn_in] = time_runner
+            end
 
             if config.validate
                 validate(correct, sample)
@@ -152,7 +198,9 @@ function run(config::GlobalConfig)
 
     end
 
-    @show times
+    print_bandwidths(config, runner_names, times)
+
+    return runner_names, times
 end
 
 
