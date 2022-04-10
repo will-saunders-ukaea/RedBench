@@ -6,15 +6,15 @@ function main()
     config = RedBench.get_global_config(
         Dict(
             "global" => Dict(
-                "num_elements" => 100,
-                "num_components" => 2,
-                "num_sources" => 10000,
-                "num_samples" => 16,
-                "num_burn_in" => 32,
+                "num_elements" => 2^10,
+                "num_components" => 1,
+                "num_sources" => 2^24,
+                "num_samples" => 8,
+                "num_burn_in" => 2,
                 "run_configs" => Dict(
-                    "SequentialJuliaNative" => Dict(
-                        "foo" => "bar",
-                    )
+                    "JuliaSequentialNaive" => Dict(),
+                    "JuliaSequentialNative" => Dict(),
+                    "JuliaThreadAtomic" => Dict(),
                 )
             ),
         )

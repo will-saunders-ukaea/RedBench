@@ -93,6 +93,17 @@ struct Correct
             values[index, :] += sample.source_values[samplex, :]
         end
         
+        #@inbounds begin
+        #    num_samples, num_components = size(sample.source_values)
+        #    for samplex in 1:num_samples
+        #        index = sample.source_indices[samplex]
+        #        for componentx in 1:num_components
+        #            values[index, componentx] += sample.source_values[samplex, componentx]
+        #        end
+        #    end
+        #end
+
+
         return new(sample, values)
     end
 end
@@ -110,13 +121,21 @@ end
 Validate a sample against a correct run.
 """
 function validate(correct::Correct, sample::Sample)
-    err = norm(correct.values - sample.elements, Inf)
-    @assert err < 1E-10
+    err = norm(correct.values - sample.elements, Inf) / abs(maximum(correct.values))
+    flag = err < 1E-10
+    if !flag
+        println("Validation error: $err")
+    end
+
+
+    return flag
 end
 
 
 # Place each runner in its own directory and source here.
+include("julia_native/julia_naive.jl")
 include("julia_native/julia_native.jl")
+include("julia_native/julia_thread_atomic.jl")
 
 
 """
@@ -124,10 +143,8 @@ Compute the achieved bandwidth for a run (GB/s).
 """
 function compute_bandwidth(config, time)
     
-    # x3 as the source value is read and written and the current running total
-    # is read?
-    num_bytes = config.num_sources * config.num_components * 8 * 3
-
+    # Number of bytes for "useful bandwidth"
+    num_bytes = 8 * config.num_components * (config.num_sources + config.num_elements) 
     return num_bytes / (time * 1E9)
 
 end
@@ -163,7 +180,7 @@ function run(config::GlobalConfig)
     # The keys in run_configs should be the names of runners to initialise.
     num_runners = length(keys(config.run_configs))
     runners = Array{Any}(undef, num_runners)
-    runner_names = keys(config.run_configs)
+    runner_names = [kx for kx in keys(config.run_configs)]
     for (ix, runner_name) in enumerate(runner_names)
         runner_type = getfield(@__MODULE__, Symbol(runner_name))
         runners[ix] = runner_type(config.run_configs[runner_name])
@@ -191,7 +208,9 @@ function run(config::GlobalConfig)
             end
 
             if config.validate
-                validate(correct, sample)
+                if !validate(correct, sample)
+                    println("Failed validation: $(runner_names[runnerx])")
+                end
             end
         end
 
