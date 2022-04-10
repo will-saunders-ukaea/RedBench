@@ -87,21 +87,16 @@ struct Correct
     function Correct(sample::Sample)
 
         values = zeros(Float64, size(sample.elements))
-        num_samples, num_components = size(sample.source_values)
-        for samplex in 1:num_samples
-            index = sample.source_indices[samplex]
-            values[index, :] += sample.source_values[samplex, :]
-        end
         
-        #@inbounds begin
-        #    num_samples, num_components = size(sample.source_values)
-        #    for samplex in 1:num_samples
-        #        index = sample.source_indices[samplex]
-        #        for componentx in 1:num_components
-        #            values[index, componentx] += sample.source_values[samplex, componentx]
-        #        end
-        #    end
-        #end
+        @inbounds begin
+            num_samples, num_components = size(sample.source_values)
+            for samplex in 1:num_samples
+                index = sample.source_indices[samplex]
+                for componentx in 1:num_components
+                    values[index, componentx] += sample.source_values[samplex, componentx]
+                end
+            end
+        end
 
 
         return new(sample, values)
