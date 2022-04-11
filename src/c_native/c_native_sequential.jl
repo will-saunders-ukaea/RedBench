@@ -12,7 +12,7 @@ mutable struct CSequentialNative <: CRunner
 
         compile(
             config["compiler"],
-            joinpath(@__DIR__, "c_native_sequential.cpp"),
+            joinpath(@__DIR__, "CSequentialNative.cpp"),
             joinpath(@__DIR__, "CSequentialNative.so"),
         )
 

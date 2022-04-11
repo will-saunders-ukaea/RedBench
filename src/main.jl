@@ -23,9 +23,8 @@ function main()
                     "JuliaSequentialNative" => Dict(),
                     "JuliaThreadAtomic" => Dict(),
                     "JuliaThreadReorder" => Dict(),
-                    "CSequentialNative" => Dict(
-                        "compiler" => gcc,
-                    ),
+                    "CSequentialNative" => Dict("compiler" => gcc),
+                    "COpenMPAtomic" => Dict("compiler" => gcc),
                 )
             ),
         )

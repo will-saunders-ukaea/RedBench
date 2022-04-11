@@ -137,6 +137,7 @@ include("julia_native/julia_thread_atomic.jl")
 include("julia_native/julia_thread_reorder.jl")
 
 include("c_native/c_native_sequential.jl")
+include("c_native/c_native_openmp.jl")
 
 
 """
