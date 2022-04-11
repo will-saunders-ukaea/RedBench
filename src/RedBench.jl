@@ -127,11 +127,16 @@ function validate(correct::Correct, sample::Sample)
 end
 
 
+include("build.jl")
+
+
 # Place each runner in its own directory and source here.
 include("julia_native/julia_naive.jl")
 include("julia_native/julia_native.jl")
 include("julia_native/julia_thread_atomic.jl")
 include("julia_native/julia_thread_reorder.jl")
+
+include("c_native/c_native_sequential.jl")
 
 
 """
