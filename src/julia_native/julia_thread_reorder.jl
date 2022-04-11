@@ -54,15 +54,14 @@ function run(r::JuliaThreadReorder, sample::Sample)
             end
         end
 
-        for iy in 1:num_components
-            for ix in 1:num_elements
-                value = 0.0
-                for threadid in 1:nthreads
-                    value += reduce_space[threadid][ix, iy]
-                end
-                sample.elements[ix, iy] = value
+        Threads.@threads for cx in 1:num_components*num_elements
+            value = 0.0
+            for threadid in 1:nthreads
+                value += reduce_space[threadid][cx]
             end
+            sample.elements[cx] = value
         end
+
     end
     t1 = time()
 

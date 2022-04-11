@@ -14,9 +14,9 @@ function main()
         Dict(
             "global" => Dict(
                 "num_elements" => 2^10,
-                "num_components" => 2,
+                "num_components" => 1,
                 "num_sources" => 2^22,
-                "num_samples" => 16,
+                "num_samples" => 32,
                 "num_burn_in" => 2,
                 "run_configs" => Dict(
                     "JuliaSequentialNaive" => Dict(),
@@ -25,6 +25,7 @@ function main()
                     "JuliaThreadReorder" => Dict(),
                     "CSequentialNative" => Dict("compiler" => gcc),
                     "COpenMPAtomic" => Dict("compiler" => gcc),
+                    "COpenMPReorder" => Dict("compiler" => gcc),
                 )
             ),
         )
