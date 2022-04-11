@@ -73,19 +73,20 @@ extern "C" int c_runner(
                 tmp_elements[output_index] += value;
                 
             }
-
         }
-    }
-    
-#pragma omp parallel for
-    for(int cx=0 ; cx<num_elements * num_components ; cx++){
-        double value = 0.0;
-        for (int dx=0 ; dx<nthreads ; dx++){
-            value += reduction_space[dx][cx];
-        }
-        elements[cx] = value;
-    }
 
+        get_thread_decomp(num_elements * num_components, &rstart, &rend);
+
+#pragma omp barrier
+        for(int cx=rstart ; cx<rend; cx++){
+            double value = 0.0;
+            for (int dx=0 ; dx<nthreads ; dx++){
+                value += reduction_space[dx][cx];
+            }
+            elements[cx] = value;
+        }
+
+    }
 
     std::chrono::high_resolution_clock::time_point _loop_timer_t1 = std::chrono::high_resolution_clock::now();
  std::chrono::duration<double> _loop_timer_res = _loop_timer_t1 - _loop_timer_t0;
