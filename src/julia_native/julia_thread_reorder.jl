@@ -1,13 +1,13 @@
 
 
 """
-A basic multithreaded runner in Julia.
+A multithreaded runner in Julia.
 """
-mutable struct JuliaThreadAtomic
+mutable struct JuliaThreadReorder
     
     config::Dict{String, Any}
     
-    function JuliaThreadAtomic(config)
+    function JuliaThreadReorder(config)
         
         return new(config)
     end
@@ -19,26 +19,22 @@ end
 """
 Called to actually run the runner on a sample.
 """
-function run(r::JuliaThreadAtomic, sample::Sample)
-    
-    @inline function atomic_add(a::Matrix{Float64}, ix::Int64, b::Float64)
-        old = Base.Threads.llvmcall(
-            "%ptr = inttoptr i64 %0 to double*\n%rv = atomicrmw fadd double* %ptr, double %1 acq_rel\nret double %rv\n",
-            Float64, Tuple{Ptr{Float64}, Float64}, pointer(a, ix), b
-        )
-        return old
-    end
+function run(r::JuliaThreadReorder, sample::Sample)
     
     num_sources, num_components = size(sample.source_values)
     num_elements, _ = size(sample.elements)
 
     nthreads = Threads.nthreads()
 
+    reduce_space = [zeros(Float64, size(sample.elements)) for threadx in 1:nthreads]
+    
+    @assert nthreads <= num_sources
+
     t0 = time()
     @inbounds begin
-
         Threads.@threads for tx in 1:nthreads
             threadid = Threads.threadid()
+            output_space = reduce_space[threadid]
                 
             # could use the btter distribution involving mod, for these sizes
             # it won't make much difference
@@ -52,10 +48,19 @@ function run(r::JuliaThreadAtomic, sample::Sample)
             for samplex in index_start:index_end
                 index = sample.source_indices[samplex]
                 for componentx in 1:num_components
-                    linear_index = (componentx - 1) * num_elements + index
-                    value = sample.source_values[samplex, componentx]
-                    atomic_add(sample.elements, linear_index, value)
+                    output_space[index, componentx] += sample.source_values[samplex, componentx]
                 end
+
+            end
+        end
+
+        for iy in 1:num_components
+            for ix in 1:num_elements
+                value = 0.0
+                for threadid in 1:nthreads
+                    value += reduce_space[threadid][ix, iy]
+                end
+                sample.elements[ix, iy] = value
             end
         end
     end

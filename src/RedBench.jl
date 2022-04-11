@@ -131,6 +131,7 @@ end
 include("julia_native/julia_naive.jl")
 include("julia_native/julia_native.jl")
 include("julia_native/julia_thread_atomic.jl")
+include("julia_native/julia_thread_reorder.jl")
 
 
 """

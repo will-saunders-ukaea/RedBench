@@ -7,14 +7,15 @@ function main()
         Dict(
             "global" => Dict(
                 "num_elements" => 2^10,
-                "num_components" => 2,
-                "num_sources" => 2^24,
+                "num_components" => 1,
+                "num_sources" => 2^20,
                 "num_samples" => 8,
                 "num_burn_in" => 2,
                 "run_configs" => Dict(
                     "JuliaSequentialNaive" => Dict(),
                     "JuliaSequentialNative" => Dict(),
                     "JuliaThreadAtomic" => Dict(),
+                    "JuliaThreadReorder" => Dict(),
                 )
             ),
         )
