@@ -139,6 +139,7 @@ include("julia_native/julia_thread_reorder.jl")
 include("c_native/c_native_sequential.jl")
 include("c_native/c_native_openmp.jl")
 
+include("cuda_native/cuda_native.jl")
 
 """
 Compute the achieved bandwidth for a run (GB/s).

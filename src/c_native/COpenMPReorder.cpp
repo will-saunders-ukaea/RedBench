@@ -3,12 +3,13 @@
 #include <cstdint>
 #include <iostream>
 #include <omp.h>
+#include <cstdlib>
 
 #define MIN(x, y) (((x) < (y)) ? (x) : (y))
 
 int get_thread_decomp(const int64_t N, int64_t * rstart, int64_t * rend){
 
-    const div_t pq = div(N, omp_get_num_threads());
+    const ldiv_t pq = std::div((long) N, (long) omp_get_num_threads());
     const int64_t i = omp_get_thread_num();
     const int64_t p = pq.quot;
     const int64_t q = pq.rem;

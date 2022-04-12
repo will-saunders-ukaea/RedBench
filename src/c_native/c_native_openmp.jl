@@ -1,5 +1,5 @@
 """
-A basic sequential runner in C
+A basic OpenMP runner in C++
 """
 
 mutable struct COpenMPAtomic <: CRunner
