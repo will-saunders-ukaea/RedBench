@@ -27,6 +27,7 @@ function run(r::T, sample::Sample) where T <: SYCLRunner
 
     num_sources, num_components = size(sample.source_values)
     num_elements, _ = size(sample.elements)
+    gpu_device = r.config["gpu_device"]
 
     ccall(
         (
@@ -38,11 +39,13 @@ function run(r::T, sample::Sample) where T <: SYCLRunner
             Int64,
             Int64,
             Int64,
+            Int64,
             Ptr{Int64},
             Ptr{Cdouble},
             Ptr{Cdouble},
             Ref{Float64},
         ),
+        gpu_device,
         num_elements,
         num_sources,
         num_components,

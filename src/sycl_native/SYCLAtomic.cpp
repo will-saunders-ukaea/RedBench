@@ -8,6 +8,7 @@
 class add_runner;
 
 extern "C" int c_runner(
+    const int64_t gpu_device,
     const int64_t num_elements,
     const int64_t num_sources,
     const int64_t num_components,
@@ -18,8 +19,23 @@ extern "C" int c_runner(
 ){
     
     using namespace cl;
+    
+    sycl::device d;
+    if (gpu_device > 0){
+        try {
+            d = sycl::device(sycl::gpu_selector());
+        } catch (sycl::exception const &e) {
+            std::cout << "Cannot select a GPU\n" << e.what() << "\n";
+            std::cout << "Using a CPU device\n";
+            d = sycl::device(sycl::cpu_selector());
+        }
+    } else {
+        d = sycl::device(sycl::cpu_selector());
+    }
+    
+    // std::cout << "Using " << d.get_info<sycl::info::device::name>() << std::endl;
 
-    sycl::queue Queue;
+    sycl::queue Queue(d);
 
     sycl::buffer<int64_t, 1> d_source_indices(source_indices, sycl::range<1>(num_sources * num_components));
     sycl::buffer<double, 1> d_source_values(source_values, sycl::range<1>(num_sources * num_components));

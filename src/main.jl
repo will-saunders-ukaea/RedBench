@@ -19,19 +19,32 @@ function main()
 
     hipsycl = RedBench.Compiler(
         "syclcc",
-        "-fPIC -shared -DRESTRICT=__restrict",
+        "-fPIC -shared -DRESTRICT=__restrict --hipsycl-targets=omp",
         "-O3",
         "-o",
     )
-    
+ 
+    hipsycl_gpu = RedBench.Compiler(
+        "syclcc",
+        "-fPIC -shared -DRESTRICT=__restrict --hipsycl-platform=cuda --hipsycl-gpu-arch=sm_60 --cuda-path=$(ENV["CUDA_HOME"])",
+        "-O3",
+        "-o",
+    )
+
+    num_elements = 2^10 # Number of rows in the matrix values are reduced into.
+    num_components = 1  # Number of columns in the matrix values are reduced into (and source matrix).
+    num_sources = 2^22  # Number of rows in the matrix of source values.
+    num_samples = 16    # Number of times to repeat the experiment.
+    num_burn_in = 2     # Number of samples (in addition to num_samples) to perform and discard.
+
     config = RedBench.get_global_config(
         Dict(
             "global" => Dict(
-                "num_elements" => 2^10, # Number of rows in the matrix values are reduced into.
-                "num_components" => 1,  # Number of columns in the matrix values are reduced into (and source matrix).
-                "num_sources" => 2^22,  # Number of rows in the matrix of source values.
-                "num_samples" => 16, # Number of times to repeat the experiment.
-                "num_burn_in" => 2,  # Number of samples (in addition to num_samples) to perform and discard.
+                "num_elements" => num_elements, 
+                "num_components" => num_components,
+                "num_sources" => num_sources,
+                "num_samples" => num_samples,
+                "num_burn_in" => num_burn_in,
 
                 # These configure each of the individual "runners".
                 "run_configs" => Dict(
@@ -42,17 +55,37 @@ function main()
                     "CSequentialNative" => Dict("compiler" => gcc),
                     "COpenMPAtomic" => Dict("compiler" => gcc),
                     "COpenMPReorder" => Dict("compiler" => gcc),
-                    "CudaAtomic" => Dict(
-                        "compiler" => nvcc,
-                        "num_threads" => 1024,
-                    ),
-                    "SYCLAtomic" => Dict("compiler" => hipsycl),
+                    # "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                 )
             ),
         )
     )
 
     RedBench.run(config)
+
+    config = RedBench.get_global_config(
+        Dict(
+            "global" => Dict(
+                "num_elements" => num_elements, 
+                "num_components" => num_components,
+                "num_sources" => num_sources,
+                "num_samples" => num_samples,
+                "num_burn_in" => num_burn_in,
+
+                # These configure each of the individual "runners".
+                "run_configs" => Dict(
+                    "CudaAtomic" => Dict(
+                        "compiler" => nvcc,
+                        "num_threads" => 1024,
+                    ),
+                    "SYCLAtomic" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
+                )
+            ),
+        )
+    )
+
+    RedBench.run(config)
+
 
 end
 
