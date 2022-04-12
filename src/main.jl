@@ -55,7 +55,7 @@ function main()
                     "CSequentialNative" => Dict("compiler" => gcc),
                     "COpenMPAtomic" => Dict("compiler" => gcc),
                     "COpenMPReorder" => Dict("compiler" => gcc),
-                    # "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
+                    "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                 )
             ),
         )
@@ -78,7 +78,7 @@ function main()
                         "compiler" => nvcc,
                         "num_threads" => 1024,
                     ),
-                    "SYCLAtomic" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
+                    "SYCLAtomicGPU" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
                 )
             ),
         )

@@ -18,6 +18,29 @@ mutable struct SYCLAtomic <: SYCLRunner
 
 end
 
+
+"""
+Exact copy of the CPU version but creates a new library name to avoid naming
+conflicts with the shared library loader.
+"""
+mutable struct SYCLAtomicGPU <: SYCLRunner
+    
+    config::Dict{String, Any}
+    
+    function SYCLAtomicGPU(config)
+
+        compile(
+            config["compiler"],
+            joinpath(@__DIR__, "SYCLAtomic.cpp"),
+            joinpath(@__DIR__, "SYCLAtomicGPU.so"),
+        )
+
+        return new(config)
+    end
+
+end
+
+
 """
 Called to actually run the runner on a sample.
 """
