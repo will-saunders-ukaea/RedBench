@@ -8,12 +8,13 @@ julia -t 8 src/main.jl
 ┌───────────────────────┬───────────┬───────────┬───────────┐
 │                  Name │  min GB/s │ mean GB/S │  max GB/s │
 ├───────────────────────┼───────────┼───────────┼───────────┤
-│     CSequentialNative │   5.63615 │   5.77202 │   5.88908 │
-│        COpenMPReorder │   13.3643 │   18.3485 │   18.9034 │
-│ JuliaSequentialNative │   3.81785 │   3.88492 │    4.1859 │
-│         COpenMPAtomic │  0.449289 │  0.489583 │    0.5078 │
-│     JuliaThreadAtomic │  0.521539 │  0.591175 │  0.662013 │
-│    JuliaThreadReorder │   7.49145 │   12.4992 │   23.3414 │
-│  JuliaSequentialNaive │ 0.0584319 │ 0.0716819 │ 0.0865527 │
+│            CudaAtomic │   46.1183 │   48.5106 │   49.0813 │
+│     CSequentialNative │   6.11668 │   6.30272 │    6.4308 │
+│        COpenMPReorder │   18.3502 │   18.8766 │   19.0838 │
+│ JuliaSequentialNative │   4.14559 │   4.17225 │   4.18229 │
+│         COpenMPAtomic │  0.428793 │  0.442635 │  0.453462 │
+│     JuliaThreadAtomic │  0.579146 │  0.620691 │  0.652335 │
+│    JuliaThreadReorder │   4.40628 │   10.0248 │   15.9823 │
+│  JuliaSequentialNaive │ 0.0619855 │ 0.0736596 │ 0.0898127 │
 └───────────────────────┴───────────┴───────────┴───────────┘
 ```

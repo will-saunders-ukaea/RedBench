@@ -20,11 +20,13 @@ function main()
     config = RedBench.get_global_config(
         Dict(
             "global" => Dict(
-                "num_elements" => 2^10,
-                "num_components" => 1,
-                "num_sources" => 2^22,
-                "num_samples" => 16,
-                "num_burn_in" => 2,
+                "num_elements" => 2^10, # Number of rows in the matrix values are reduced into.
+                "num_components" => 1,  # Number of columns in the matrix values are reduced into (and source matrix).
+                "num_sources" => 2^22,  # Number of rows in the matrix of source values.
+                "num_samples" => 16, # Number of times to repeat the experiment.
+                "num_burn_in" => 2,  # Number of samples (in addition to num_samples) to perform and discard.
+
+                # These configure each of the individual "runners".
                 "run_configs" => Dict(
                     "JuliaSequentialNaive" => Dict(),
                     "JuliaSequentialNative" => Dict(),
@@ -35,7 +37,7 @@ function main()
                     "COpenMPReorder" => Dict("compiler" => gcc),
                     "CudaAtomic" => Dict(
                         "compiler" => nvcc,
-                        "num_threads" => 256,
+                        "num_threads" => 1024,
                     ),
                 )
             ),
