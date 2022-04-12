@@ -16,6 +16,13 @@ function main()
         "-O3",
         "-o",
     )
+
+    hipsycl = RedBench.Compiler(
+        "syclcc",
+        "-fPIC -shared -DRESTRICT=__restrict",
+        "-O3",
+        "-o",
+    )
     
     config = RedBench.get_global_config(
         Dict(
@@ -39,6 +46,7 @@ function main()
                         "compiler" => nvcc,
                         "num_threads" => 1024,
                     ),
+                    "SYCLAtomic" => Dict("compiler" => hipsycl),
                 )
             ),
         )

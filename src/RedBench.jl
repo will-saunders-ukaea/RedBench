@@ -141,6 +141,8 @@ include("c_native/c_native_openmp.jl")
 
 include("cuda_native/cuda_native.jl")
 
+include("sycl_native/sycl_native.jl")
+
 """
 Compute the achieved bandwidth for a run (GB/s).
 """
