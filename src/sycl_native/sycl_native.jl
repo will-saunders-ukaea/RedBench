@@ -41,6 +41,45 @@ mutable struct SYCLAtomicGPU <: SYCLRunner
 end
 
 
+mutable struct SYCLMap <: SYCLRunner
+    
+    config::Dict{String, Any}
+    
+    function SYCLMap(config)
+
+        compile(
+            config["compiler"],
+            joinpath(@__DIR__, "SYCLMap.cpp"),
+            joinpath(@__DIR__, "SYCLMap.so"),
+        )
+
+        return new(config)
+    end
+
+end
+
+
+"""
+Same as CPU version but renamed to avoid naming collisions.
+"""
+mutable struct SYCLMapGPU <: SYCLRunner
+    
+    config::Dict{String, Any}
+    
+    function SYCLMapGPU(config)
+
+        compile(
+            config["compiler"],
+            joinpath(@__DIR__, "SYCLMap.cpp"),
+            joinpath(@__DIR__, "SYCLMapGPU.so"),
+        )
+
+        return new(config)
+    end
+
+end
+
+
 """
 Called to actually run the runner on a sample.
 """
