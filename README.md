@@ -1,6 +1,27 @@
 # RedBench
 
 RedBench is a tool to benchmark reductions into elements of arrays using different hardware and programming models. Run ``make`` to run benchmarks.
+```
+CPU
+~~~
+JuliaSequentialNaive    : A naive sequential implementation in Julia.
+JuliaSequentialNative   : A more optimised sequential Julia implementation.
+JuliaThreadAtomic       : A multithreaded version in Julia using atomics.
+JuliaThreadLocalMem     : A multithreaded version in Julia using local memory per thread.
+CSequentialNative       : A sequential verison in C.
+COpenMPAtomic           : A multithreaded version in OpenMP using atomics.
+COpenMPLocalMem         : A multithreaded version in OpenMP using local memory per thread.
+SYCLAtomic              : A SYCL implementation using atomics.
+SYCLMap                 : A SYCL implementation using a map from destination to sources.
+
+GPU
+~~~
+CudaAtomic              : A CUDA version using atomics.
+SYCLAtomicGPU           : Identical to SYCLAtomic but renamed to avoid library name collisions.
+SYCLMapGPU              : Identical to SYCLMap but renamed to avoid library name collisions.
+```
+
+
 
 ```
 # Sample outputs from i9-10920X + P2200.
