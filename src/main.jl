@@ -31,12 +31,34 @@ function main()
         "-o",
     )
 
-    num_elements = 2^12 # Number of rows in the matrix values are reduced into.
+    num_elements = 2^18 # Number of rows in the matrix values are reduced into.
     num_components = 1  # Number of columns in the matrix values are reduced into (and source matrix).
                         # (components are like dofs in a cell).
-    num_sources = 2^18  # Number of rows in the matrix of source values.
+    num_sources = 2^22  # Number of rows in the matrix of source values.
     num_samples = 16    # Number of times to repeat the experiment.
     num_burn_in = 2     # Number of samples (in addition to num_samples) to perform and discard.
+
+
+    """
+    CPU
+    ~~~
+    JuliaSequentialNaive    : A naive sequential implementation in Julia.
+    JuliaSequentialNative   : A more optimised sequential Julia implementation.
+    JuliaThreadAtomic       : A multithreaded version in Julia using atomics.
+    JuliaThreadLocalMem     : A multithreaded version in Julia using local memory per thread.
+    CSequentialNative       : A sequential verison in C.
+    COpenMPAtomic           : A multithreaded version in OpenMP using atomics.
+    COpenMPLocalMem         : A multithreaded version in OpenMP using local memory per thread.
+    SYCLAtomic              : A SYCL implementation using atomics.
+    SYCLMap                 : A SYCL implementation using a map from destination to sources.
+
+    GPU
+    ~~~
+    CudaAtomic              : A CUDA version using atomics.
+    SYCLAtomicGPU           : Identical to SYCLAtomic but renamed to avoid library name collisions.
+    SYCLMapGPU              : Identical to SYCLMap but renamed to avoid library name collisions.
+    """
+
 
     config = RedBench.get_global_config(
         Dict(
