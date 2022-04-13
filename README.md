@@ -3,6 +3,9 @@
 RedBench is a tool to benchmark reductions into elements of arrays using different hardware and programming models. Run ``make`` to run benchmarks.
 
 ```
+# Sample outputs from i9-10920X + P2200.
+# 8KB output array:
+
 $ REDBENCH_NUM_THREADS=12 make
 julia -t 12 src/main.jl
 ┌───────────────────────┬───────────┬───────────┬───────────┐
@@ -23,7 +26,31 @@ julia -t 12 src/main.jl
 │    CudaAtomic │  43.2898 │    46.024 │  46.7007 │
 │ SYCLAtomicGPU │  42.8972 │   43.4851 │  44.2888 │
 └───────────────┴──────────┴───────────┴──────────┘
+
+# 2MB output array:
+$ REDBENCH_NUM_THREADS=12 make
+julia -t 12 src/main.jl
+┌───────────────────────┬───────────┬───────────┬───────────┐
+│                  Name │  min GB/s │ mean GB/S │  max GB/s │
+├───────────────────────┼───────────┼───────────┼───────────┤
+│     CSequentialNative │   1.75068 │   1.83317 │   1.87294 │
+│ JuliaSequentialNative │   1.39373 │   1.61309 │   1.72072 │
+│         COpenMPAtomic │   1.52919 │   1.78727 │   2.24163 │
+│   JuliaThreadLocalMem │   2.37374 │    2.9587 │   4.15856 │
+│            SYCLAtomic │   1.10282 │   1.44428 │   1.70915 │
+│       COpenMPLocalMem │   4.11315 │   4.48913 │   5.05998 │
+│     JuliaThreadAtomic │   1.16011 │   1.46337 │   1.95533 │
+│  JuliaSequentialNaive │ 0.0461764 │ 0.0571811 │ 0.0693821 │
+└───────────────────────┴───────────┴───────────┴───────────┘
+┌───────────────┬──────────┬───────────┬──────────┐
+│          Name │ min GB/s │ mean GB/S │ max GB/s │
+├───────────────┼──────────┼───────────┼──────────┤
+│    CudaAtomic │   4.6356 │   4.66781 │  4.71595 │
+│ SYCLAtomicGPU │  4.64771 │   4.68386 │  4.73989 │
+└───────────────┴──────────┴───────────┴──────────┘
 ```
+
+
 ## Installation
 
 ```
