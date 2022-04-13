@@ -80,6 +80,43 @@ mutable struct SYCLMapGPU <: SYCLRunner
 end
 
 
+mutable struct SYCLReorder <: SYCLRunner
+    
+    config::Dict{String, Any}
+    
+    function SYCLReorder(config)
+
+        compile(
+            config["compiler"],
+            joinpath(@__DIR__, "SYCLReorder.cpp"),
+            joinpath(@__DIR__, "SYCLReorder.so"),
+        )
+
+        return new(config)
+    end
+
+end
+
+
+mutable struct SYCLReorderGPU <: SYCLRunner
+    
+    config::Dict{String, Any}
+    
+    function SYCLReorderGPU(config)
+
+        compile(
+            config["compiler"],
+            joinpath(@__DIR__, "SYCLReorder.cpp"),
+            joinpath(@__DIR__, "SYCLReorderGPU.so"),
+        )
+
+        return new(config)
+    end
+
+end
+
+
+
 """
 Called to actually run the runner on a sample.
 """

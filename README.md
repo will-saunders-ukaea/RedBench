@@ -13,12 +13,14 @@ COpenMPAtomic           : A multithreaded version in OpenMP using atomics.
 COpenMPLocalMem         : A multithreaded version in OpenMP using local memory per thread.
 SYCLAtomic              : A SYCL implementation using atomics.
 SYCLMap                 : A SYCL implementation using a map from destination to sources.
+SYCLReorder             : Experiment for case when data is already stored in an adjacent manner.
 
 GPU
 ~~~
 CudaAtomic              : A CUDA version using atomics.
 SYCLAtomicGPU           : Identical to SYCLAtomic but renamed to avoid library name collisions.
 SYCLMapGPU              : Identical to SYCLMap but renamed to avoid library name collisions.
+SYCLReorderGPU          : Identical to SYCLReorder but renamed to avoid library name collisions.
 ```
 
 

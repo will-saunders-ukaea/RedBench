@@ -31,7 +31,7 @@ function main()
         "-o",
     )
 
-    num_elements = 2^18 # Number of rows in the matrix values are reduced into.
+    num_elements = 2^16 # Number of rows in the matrix values are reduced into.
     num_components = 1  # Number of columns in the matrix values are reduced into (and source matrix).
                         # (components are like dofs in a cell).
     num_sources = 2^22  # Number of rows in the matrix of source values.
@@ -51,12 +51,14 @@ function main()
     COpenMPLocalMem         : A multithreaded version in OpenMP using local memory per thread.
     SYCLAtomic              : A SYCL implementation using atomics.
     SYCLMap                 : A SYCL implementation using a map from destination to sources.
+    SYCLReorder             : Experiment for case when data is already stored in an adjacent manner.
 
     GPU
     ~~~
     CudaAtomic              : A CUDA version using atomics.
     SYCLAtomicGPU           : Identical to SYCLAtomic but renamed to avoid library name collisions.
     SYCLMapGPU              : Identical to SYCLMap but renamed to avoid library name collisions.
+    SYCLReorderGPU          : Identical to SYCLReorder but renamed to avoid library name collisions.
     """
 
 
@@ -80,6 +82,7 @@ function main()
                     "COpenMPLocalMem" => Dict("compiler" => gcc),
                     "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                     "SYCLMap" => Dict("compiler" => hipsycl, "gpu_device" => 0),
+                    "SYCLReorder" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                 )
             ),
         )
@@ -104,6 +107,7 @@ function main()
                     ),
                     "SYCLAtomicGPU" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
                     "SYCLMapGPU" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
+                    "SYCLReorderGPU" => Dict("compiler" => hipsycl_gpu, "gpu_device" => 1),
                 )
             ),
         )
