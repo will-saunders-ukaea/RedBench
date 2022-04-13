@@ -67,12 +67,12 @@ extern "C" int c_runner(
     double *d_source_values;
     double *d_elements;
 
-    CHECK_CUDA(cudaMalloc(&d_source_indices, num_sources * num_components * sizeof(int64_t)));
+    CHECK_CUDA(cudaMalloc(&d_source_indices, num_sources * sizeof(int64_t)));
     CHECK_CUDA(cudaMalloc(&d_source_values, num_sources * num_components * sizeof(double)));
     CHECK_CUDA(cudaMalloc(&d_elements, num_elements * num_components * sizeof(double)));
 
     CHECK_CUDA(cudaMemcpy(
-        d_source_indices, source_indices, num_sources * num_components * sizeof(int64_t), cudaMemcpyHostToDevice
+        d_source_indices, source_indices, num_sources * sizeof(int64_t), cudaMemcpyHostToDevice
     ));
     CHECK_CUDA(cudaMemcpy(
         d_source_values, source_values, num_sources * num_components * sizeof(double), cudaMemcpyHostToDevice

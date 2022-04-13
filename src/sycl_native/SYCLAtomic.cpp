@@ -37,11 +37,11 @@ extern "C" int c_runner(
     
     sycl::queue Queue(d);
 
-    auto d_source_indices = sycl::malloc_device<int64_t>(num_sources * num_components, Queue);
+    auto d_source_indices = sycl::malloc_device<int64_t>(num_sources, Queue);
     auto d_source_values = sycl::malloc_device<double>(num_sources * num_components, Queue);
     auto d_elements = sycl::malloc_device<double>(num_elements * num_components, Queue);
 
-    auto e0 = Queue.memcpy(d_source_indices, source_indices, num_sources * num_components * sizeof(int64_t));
+    auto e0 = Queue.memcpy(d_source_indices, source_indices, num_sources * sizeof(int64_t));
     auto e1 = Queue.memcpy(d_source_values, source_values, num_sources * num_components * sizeof(double));
     auto e2 = Queue.memcpy(d_elements, elements, num_elements * num_components * sizeof(double));
     e0.wait() ; e1.wait() ; e2.wait();
