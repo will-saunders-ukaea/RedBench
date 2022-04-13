@@ -31,7 +31,7 @@ function main()
         "-o",
     )
 
-    num_elements = 2^16 # Number of rows in the matrix values are reduced into.
+    num_elements = 2^18 # Number of rows in the matrix values are reduced into.
     num_components = 1  # Number of columns in the matrix values are reduced into (and source matrix).
                         # (components are like dofs in a cell).
     num_sources = 2^22  # Number of rows in the matrix of source values.

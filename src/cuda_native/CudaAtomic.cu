@@ -105,6 +105,10 @@ extern "C" int c_runner(
         elements, d_elements, num_elements * num_components * sizeof(double), cudaMemcpyDeviceToHost
     ));
 
+    CHECK_CUDA(cudaFree(d_source_indices));
+    CHECK_CUDA(cudaFree(d_source_values));
+    CHECK_CUDA(cudaFree(d_elements));
+
     return 0;
 }
 
