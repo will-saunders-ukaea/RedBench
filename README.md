@@ -24,3 +24,18 @@ julia -t 12 src/main.jl
 │ SYCLAtomicGPU │  42.8972 │   43.4851 │  44.2888 │
 └───────────────┴──────────┴───────────┴──────────┘
 ```
+## Installation
+
+```
+# Clone repository
+git clone https://github.com/will-saunders-ukaea/RedBench.git
+# Add to Julia environment
+julia -e 'using Pkg; Pkg.develop(path="./RedBench")'
+```
+
+## Requirements
+Tested with:
+* hipSYCL-0.9.2
+* CUDA-10.1.243
+
+
