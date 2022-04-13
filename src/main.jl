@@ -51,10 +51,10 @@ function main()
                     "JuliaSequentialNaive" => Dict(),
                     "JuliaSequentialNative" => Dict(),
                     "JuliaThreadAtomic" => Dict(),
-                    "JuliaThreadReorder" => Dict(),
+                    "JuliaThreadLocalMem" => Dict(),
                     "CSequentialNative" => Dict("compiler" => gcc),
                     "COpenMPAtomic" => Dict("compiler" => gcc),
-                    "COpenMPReorder" => Dict("compiler" => gcc),
+                    "COpenMPLocalMem" => Dict("compiler" => gcc),
                     "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                 )
             ),

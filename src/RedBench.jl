@@ -134,7 +134,7 @@ include("build.jl")
 include("julia_native/julia_naive.jl")
 include("julia_native/julia_native.jl")
 include("julia_native/julia_thread_atomic.jl")
-include("julia_native/julia_thread_reorder.jl")
+include("julia_native/julia_thread_localmem.jl")
 
 include("c_native/c_native_sequential.jl")
 include("c_native/c_native_openmp.jl")

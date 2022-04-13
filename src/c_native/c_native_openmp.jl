@@ -19,16 +19,16 @@ mutable struct COpenMPAtomic <: CRunner
 
 end
 
-mutable struct COpenMPReorder <: CRunner
+mutable struct COpenMPLocalMem <: CRunner
     
     config::Dict{String, Any}
     
-    function COpenMPReorder(config)
+    function COpenMPLocalMem(config)
 
         compile(
             config["compiler"],
-            joinpath(@__DIR__, "COpenMPReorder.cpp"),
-            joinpath(@__DIR__, "COpenMPReorder.so"),
+            joinpath(@__DIR__, "COpenMPLocalMem.cpp"),
+            joinpath(@__DIR__, "COpenMPLocalMem.so"),
         )
 
         return new(config)

@@ -3,11 +3,11 @@
 """
 A multithreaded runner in Julia.
 """
-mutable struct JuliaThreadReorder
+mutable struct JuliaThreadLocalMem
     
     config::Dict{String, Any}
     
-    function JuliaThreadReorder(config)
+    function JuliaThreadLocalMem(config)
         
         return new(config)
     end
@@ -19,7 +19,7 @@ end
 """
 Called to actually run the runner on a sample.
 """
-function run(r::JuliaThreadReorder, sample::Sample)
+function run(r::JuliaThreadLocalMem, sample::Sample)
     
     num_sources, num_components = size(sample.source_values)
     num_elements, _ = size(sample.elements)
