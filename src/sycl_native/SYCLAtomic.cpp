@@ -4,6 +4,11 @@
 #include <iostream>
 #include <CL/sycl.hpp>
 
+#if defined (__INTEL_LLVM_COMPILER)
+    #define ATOMIC_REF sycl::ext::oneapi::atomic_ref
+#else
+    #define ATOMIC_REF sycl::atomic_ref
+#endif
 
 class add_runner;
 
@@ -57,13 +62,22 @@ extern "C" int c_runner(
                     const int64_t output_index = cx * num_elements + index;
                     const double value = d_source_values[cx * num_sources + idx];
                     
+
+#if defined (__INTEL_LLVM_COMPILER)
+                    auto element_atomic = sycl::ext::oneapi::atomic_ref<double,
+                                    sycl::ext::oneapi::memory_order_acq_rel,
+                                    sycl::ext::oneapi::memory_scope_device,
+                                    sycl::access::address_space::global_space>(d_elements[output_index]);
+                    
+                    element_atomic.fetch_add(value);
+#else
                     sycl::atomic_ref<
                         double,
                         sycl::memory_order::relaxed,
                         sycl::memory_scope::device
                     > element_atomic(d_elements[output_index]);
-
                     element_atomic.fetch_add(value);
+#endif
 
                 }
             });

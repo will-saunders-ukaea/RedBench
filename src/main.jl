@@ -23,6 +23,13 @@ function main()
         "-O3",
         "-o",
     )
+
+    dpcpp = RedBench.Compiler(
+        "dpcpp",
+        "-shared -fPIC",
+        "-O3 -xHost -DRESTRICT=__restrict",
+        "-o"
+    )
  
     hipsycl_gpu = RedBench.Compiler(
         "syclcc",
@@ -80,6 +87,7 @@ function main()
                     "CSequentialNative" => Dict("compiler" => gcc),
                     "COpenMPAtomic" => Dict("compiler" => gcc),
                     "COpenMPLocalMem" => Dict("compiler" => gcc),
+                    #"SYCLAtomic" => Dict("compiler" => dpcpp, "gpu_device" => 0),
                     "SYCLAtomic" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                     "SYCLMap" => Dict("compiler" => hipsycl, "gpu_device" => 0),
                     "SYCLReorder" => Dict("compiler" => hipsycl, "gpu_device" => 0),
